@@ -1,0 +1,35 @@
+System Control Units
+Peripheral Sensor Interface with Serial PHY
+Peripheral Sensor Interface
+Versatile Analog-to-Digital Converter
+System Timer
+System Architecture
+Single Edge Nibble Transmission
+Safety Management Unit
+Safety Concept
+Queued Synchronous Peripheral Interface
+Program Memory Unit
+Micro Second Channel 
+Memory Test Unit
+Memory Maps
+Interrupt Router
+Inter-Integrated Circuit Module
+Input Output Monitor
+Infineon Low Level Driver
+High Speed Serial Link
+Hardware Security Module
+Generic Timer Module
+General Purpose Timer Unit
+General Purpose Input Output
+FlexRay Protocol Controller
+Flexible CRC Engine
+External Bus Unit
+Ethernet MAC
+Direct Memory Access
+Delta-Sigma Analog-to-Digital Converter
+Debug Support
+Controller Area Network
+Central Processing Unit
+Capture Compare Unit 6
+Advanced Driver Assistance Subsystem (ADAS)
+Asynchronous Synchronous Interface

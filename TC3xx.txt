@@ -1,0 +1,23 @@
+Asynchronous Synchronous Interface
+Capture Compare Unit 6
+Central Processing Unit
+Debug Support
+Direct Memory Access 
+Enhanced Delta-Sigma Analog-to-Digital Converter
+FlexRay Protocol Controller
+General Purpose Input Output 
+General Purpose Timer Unit
+Infineon Low Level Driver
+Input Output Monitor
+Inter-Integrated Circuit Module
+Interrupt Router
+Memory Maps
+Memory Test Unit
+Micro Second Channelb
+Peripheral Sensor Interface
+Peripheral Sensor Interface with Serial PHY
+Queued Synchronous Peripheral Interface
+Radar Interface
+Single Edge Nibble Transmission
+System Architecture
+System Timer

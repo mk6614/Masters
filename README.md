@@ -9,11 +9,12 @@ This file is used to set the constants of a benhmark execution.
 Number of tasks has to be defined for perf.h and perf.c memory allocation.
 The unit of memory per task (implemented as a C typedef struct, called task_counter), needed to perform a benchmark is dependant on the benchmark configuration.
 The user can define 
-* MEASURE_WAITING_TIME, which will log how much time does a task spend in waiting time (not yet implemented)
+* MEASURE_WAITING_TIME, which will log how much time does a task spend in waiting time (in ticks) (not yet implemented, can not be use in combination within others)
 * MEASURE_CLK, which logs the specifics in units of clock ticks,
 * MEASURE_INSTRUCTIONS, which logs the specifics in units of instructions,
 * MEASURE_DATA/PROGRAM_CACHE_HITS/MISSES, which logs the specifics in units of data/program cache /hits//misses (not yet implemanted),
 
+Each of the desired units to measure has a dedicated set of the folowing types:
 * 8 bit unsigned integer to count the number of executions of the task in one benchmark run,
 * 32 bit unsigned integer to log a counter for the currently executing execution of the task,
 * 64 bit unsigned integer to log the sum of counter for all the executions of the task,

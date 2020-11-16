@@ -55,6 +55,7 @@ The basic test was run on TC264D B-Step;
 | 4       | 10                | 24000560 | 2400056 | 0        | 2400056 | 2400056 | 497032925       | 49703292        | 1444481269      | 43403144        | 56003441        |
 | 5       | 10                | 24000560 | 2400056 | 0        | 2400056 | 2400056 | 637036275       | 63703627        | 1444481269      | 57403479        | 70003776        |
 * compiled with TASKING, executed on the CPU1 at speed of 200MHz with the following results:
+
 | task id | task exec counter | clk sum  | clk avg | clk var    | clk min | clk max | instruction sum | instruction avg | instruction var | instruction min | instruction max |
 |---------|-------------------|----------|---------|------------|---------|---------|-----------------|-----------------|-----------------|-----------------|-----------------|
 | 0       | 1                 | 1952     | 1952    | 0          | 0       | 0       | 0               | 0               | 0               | 0               | 0               |

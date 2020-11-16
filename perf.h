@@ -9,16 +9,29 @@
 	#include TC_INCLUDE(TCPATH/Ifx_reg.h) // includes IfxCpu_reg.h, IfxCpu_bf.h and all others)
 	#include "machine/intrinsics.h"
 	#include "machine/stdlib.h"
-	#include "stdint.h"
+    #include "stdint.h"
+
+	//#include "stdint.h"
 	#define MFCR _mfcr
 	#define MTCR _mtcr
 #elif (defined(__TASKING__))
-	#ifdef __CPU__
-		#include __SFRFILE__(__CPU__)
-	#endif
+	//#ifdef __CPU__
+	//	#include __SFRFILE__(__CPU__)
+	//#endif
+    #include "IfxCpu_reg.h"
+    #include "Ifx_Types.h"
 	#define MFCR __mfcr
 	#define MTCR __mtcr
+#define uint8_t     uint8
+#define uint32_t    uint32
+#define uint64_t    uint64
+#define int32_t     sint32
+#else
+#error "Compiler is not supported"
 #endif /* __GNUC__ || __TASKING__ */
+
+
+
 
 
 //value of sticky overflow flag
@@ -59,7 +72,7 @@ typedef struct {
 #define LIST_INIT(l)	uint8_t i=0; while(i++<NUMBER_OF_TASKS) initTaskCounter(&l[i])
 
 #define SET_MIN(x,min)	if (x<min) min=x;
-#define SET_MAX(x,max)	if (x<max) max=x;
+#define SET_MAX(x,max)	if (x>max) max=x;
 
 typedef struct {
 	uint8_t exec_counter;
@@ -97,12 +110,28 @@ void pauseTaskCounter(task_counter* counter, perf_counter tmp_counter);
 
 
 void initPerformanceTest(void);
+void stopPerformanceTest(void);
 void startTask(uint8_t priority);
 void stopTask(void);
 void waitForResource(void);
 void resumeOnResource(uint8_t priority);
 void getCounter(uint8_t priority, task_counter* ret);
+void printCounters(void (*printf)(const char *fmt, ...));
 
+void performBasicTest(void (*printf)(const char *fmt, ...));
+
+
+/*
+ * function wrappers: declare a task with MEASURE_TASK(FuncName), where FuncName is a void function name
+ * the function is wrapped with startTask and stopTask for measuring purposes
+ * Example:
+ * 1)	define function void Task1(void)
+ * 		 MEASURE_TASK(Task1) { int i; for (i=0; i<1000; i++) .... } -> call this function with TaskTask1();
+ *
+ */
+#define DECLARE_TASK(FunName)	void ##FunName(void)
+#define MEASURE_TASK(FunName, priority)	static void FunName(void); static void Task##FunName(void) { startTask(priority); FunName(); stopTask(); } static void FunName(void)
+#define CALL_TASK(FunName)		Task##FunName();
 
 
 

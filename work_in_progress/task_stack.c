@@ -26,8 +26,8 @@ void onTaskStart(uint8_t task_id, perf_counter tmp_counter)
 
 void onTaskFinish(perf_counter tmp_counter)
 {
-	//update and pop itself
-	updateTaskExecCounter(&task_list[STACK_POP(task_stack)], tmp_counter);
+	//finish task and pop itself
+	finishTaskExecCounter(&task_list[STACK_POP(task_stack)], tmp_counter);
 }
 
 
@@ -55,8 +55,6 @@ void onResourceRelease(uint8_t resource_id)
 void finishIdleTask(perf_counter tmp_counter)
 {
 	//update the task that was interrupted by this request
-	updateTaskExecCounter(&task_list[STACK_TOP(task_stack)], tmp_counter);
-	//finish the idle task
 	finishTaskExecCounter(&task_list[0], tmp_counter);
 }
 

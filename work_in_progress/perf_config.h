@@ -10,6 +10,12 @@
 
 #define TCPATH tc26xb
 
+#ifndef USE_BR
+#define NEW_LINE "\n"
+#else
+#define NEW_LINE "\b\r"
+#endif
+
 
 #define NUMBER_OF_TASKS 5
 #define NUMBER_OF_RESOURCES 0

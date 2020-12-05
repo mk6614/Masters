@@ -8,7 +8,7 @@
 #ifndef TASK_COUNTER_C_
 #define TASK_COUNTER_C_
 
-
+#include "perf_config.h"
 #include "task_counter.h"
 
 
@@ -96,7 +96,7 @@ void printCounter(task_counter* counter, void (*printf)(const char *fmt, ...))
 	#ifdef MEASURE_INSTRUCTIONS
 			printf(", %llu, %lu, %lu, %lu, %lu", (unsigned long long)counter->inst_sum, (unsigned long)(counter->inst_sum/counter->exec_counter), (unsigned long)counter->inst_var, (unsigned long)counter->inst_min, (unsigned long)counter->inst_max);
 	#endif
-			printf("\n\b\r");
+			printf(NEW_LINE);
 }
 
 

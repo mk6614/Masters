@@ -143,6 +143,3 @@ The `Benchmark.h` header provides functions, used by the benchmark user.
 The implementation depends on the context;
 * the TASKSs can be executed within a real-time context, by the use od a real-time OS (like Erika Enterprise). When compiling with `ERIKA_OS` macro defined, the TASK is defines as is in Erika Enterprise. The user does not need to call the TASK explicitly.
 * when TASKs are not executed within a real-time context, the user can explicitly call tasks as needed by using CALL_TASK, defined in `TaskDefinition.h` macro.
-
-
-

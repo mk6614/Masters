@@ -10,11 +10,8 @@
 void initTaskStack(void)
 {
 	int i,j;
-	for (i=0;i<NUMBER_OF_CORES; i++) STACK_INIT(task_stack[i],i); //puts the idle task on stack
-	}
-
-	for (j=0; j<NUMBER_OF_TASKS+2; j++) initTaskCounter(&task_list[j]);
-	}
+	for (i=0;i<NUMBER_OF_CORES; i++) STACK_INIT(task_stack[i],i); //puts the idle tasks on stack
+	for (j=0; j<NUMBER_OF_TASKS+NUMBER_OF_CORES; j++) initTaskCounter(&task_list[j]);
 
 }
 

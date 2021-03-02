@@ -4,8 +4,10 @@ The source files contain an implementation of the TriCore performance counter, w
 The benchmark creates space for logging the counter for each task, specified by the user.
 The benchmark can be run in 3 different environments;
 * on pc, using makefile (the 17 feb. refactor has been tested)
-* on TriCore target outside a real-time context, using HighTecIDE () (the 17 feb. refactor is not yet tested)
-* on TriCore target inside a real-time context, using RTDruid IDE (Erika Enterprise) (the refactor is not zet tested)
+* on TriCore target outside a real-time context, using HighTecIDE () (the 17 feb. refactor has been tested)
+* on TriCore target inside a real-time context, using RTDruid IDE (Erika Enterprise) (the the 17 feb. refactor has been tested)
+
+The newest addition is multi-core functionality. It has been briefly tested in Erika OS.
 
 ## UnitTests folder and Makefile
 
@@ -26,22 +28,22 @@ The file `UnitTests/UnitTestMain` demonstrates the use of the Benchmark;
 ```
 * define desired TASKs;
     * use TASK(name) macro to define a TASK
-    * each TASK needs to be activated; activate the TASK by calling `startTask(id)` at the start of each TASK, where `id` is the tasks unique identification number on the interval `[1, NUMBER_OF_TASKS]`. You should define `NUMBER_OF_TASKS` as a macro variable in file `BenchmarkCfg.h`. Note that one additional TaskCounter will be created, utilized as an idle task, whose `id` corresponds to `0`.
-    * each TASK needs to be terminated. If the TASK terminates at multiple point, declare all points. Terminate the TASK by calling `finishTask()` wherever needed.
+    * each TASK needs to be activated; activate the TASK by calling `startTask(core_id, task_id)` at the start of each TASK, where `core_id` is the id of the core, executing the task, and `task_id` the task's unique identification number on the interval `[NUMBER_OF_CORES, NUMBER_OF_TASKS+NUMBER_OF_CORES)`. You should define `NUMBER_OF_TASKS` and `NUMBER_OF_CORES` as a macro in file `BenchmarkCfg.h`. Note that one additional TaskCounter will be created, utilized as an idle task, whose `task_id` corresponds to a number on interval `[0, NUMBER_OF_CORES)`.
+    * each TASK needs to be terminated. If the TASK terminates at multiple point, declare all points. Terminate the TASK by calling `finishTask(core_id)` wherever needed.
 
 ```
 TASK(task1)
 {
-    startTask(1)
+    startTask(0,1)
     if (branch)
     {
         //some work
-        finishTask();
+        finishTask(0);
     }
     else
     {
         //some other work
-        finishTask();
+        finishTask(0);
     }
 }
 ```
@@ -86,14 +88,17 @@ When compiling for a TriCore target, the following should hold;
 * or 2) `__TASKING__` is defined;
   *  `__SFRFILE__` and `__CPU__` must be defined as in `AURIX Developement Studio`
 
-Define them in `BenchmarkCfg.h`.
+The `TCPATH` is used in  `HighTec IDE` AURIX examples and defined in `tc_inc_path.h`. It can be any string that matches one of the folders in HighTec's GCC TriCore include folder (defaults to `C:\HighTec\toolchains\tricore\v4.9.3.0-infineon-1.0\tricore\include`).
+
+Similarly, one can find appropriate `__SFRFILE__` and `__CPU__` values within AURIX Development Studio examples.
+
+You can also define them in `BenchmarkCfg.h`.
 
 ## Compiling for Erika Enterprise
 
 When compiling to use with Erika Enterprise OS, `ERIKA_OS` macro should be defined in `BenchmarkCfg.h`.
 Currently, only HighTec GCC compiler has been tested, therefore please define `__GNUC__` and `TCPATH` as listed above.
-
-
+Make sure that all the Benchmark's source files (`.c`) are listed in `APP_SRC` attributes and the appropriate `MCU_DATA` is selected within `.oil` file. Implement a printf-like function to pass to the Benchmark at the info printing point.
 
 
 ## BenchmarkCfg.h
@@ -134,8 +139,8 @@ Each of the desired measurements adds the following types to the `task_counter` 
 ## TaskStack.h and TaskStack.c
 
 A simple stack structure is used to trace the task execution in the real-time OS context (Erika Enterprise).
-Additionally, the file creates a TaskCounter list to store the needed structures. The size of the list is `NUMBER_OF_TASKS + 1`, where the zeroth task is the idle task.
-Although not needed outside of OS, it is still used when `ERIKA_OS` is not defined.
+Additionally, the file creates a TaskCounter list to store the needed structures. The size of the list is `NUMBER_OF_TASKS + NUMBER_OF_CORES`, where the first `NUMBER_OF_CORES` tasks are the idle tasks.
+Although not needed outside of OS, the idle tasks are used even when `ERIKA_OS` is not defined.
 
 ## Benchmark.h, ErikaBenchmark.c and HighTecBecnhmark.c
 

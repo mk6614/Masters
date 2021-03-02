@@ -44,6 +44,12 @@ perf_counter __readPerfCounter(void);
  */
 void __resetPerfCounter(void);
 
+/**
+ * \brief sets the performance counter values to the desired values
+ */
+
+void __writePerfCounter(perf_counter counter);
+
 
 
 

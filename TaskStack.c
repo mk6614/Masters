@@ -9,48 +9,48 @@
 
 void initTaskStack(void)
 {
-	STACK_INIT(task_stack); 		//put the idle task on stack
-	int8_t i= 0;
-	for (i=0; i<=NUMBER_OF_TASKS; i++)
-	{
-		initTaskCounter(&task_list[i]);
+	int i,j;
+	for (i=0;i<NUMBER_OF_CORES; i++) STACK_INIT(task_stack[i],i); //puts the idle task on stack
 	}
+
+	for (j=0; j<NUMBER_OF_TASKS+2; j++) initTaskCounter(&task_list[j]);
+	}
+
 }
 
-void onTaskStart(uint8_t task_id, perf_counter tmp_counter)
+void onTaskStart(uint8_t core_id, uint8_t task_id, perf_counter tmp_counter)
 {
 	//update previously running
-	updateTaskExecCounter(&task_list[STACK_TOP(task_stack)], tmp_counter);
+	updateTaskExecCounter(&task_list[STACK_TOP(task_stack[core_id])], tmp_counter);
 	//push yourself on stack
-	STACK_PUSH(task_stack,task_id);
+	STACK_PUSH(task_stack[core_id],task_id);
 }
 
-void onTaskFinish(perf_counter tmp_counter)
+void onTaskFinish(uint8_t core_id, perf_counter tmp_counter)
 {
 	//finish task and pop itself
-	finishTaskExecCounter(&task_list[STACK_POP(task_stack)], tmp_counter);
+	finishTaskExecCounter(&task_list[STACK_POP(task_stack[core_id])], tmp_counter);
 }
 
 
-void onSemaforWait(perf_counter tmp_counter)
+void onSemaforWait(uint8_t core_id, perf_counter tmp_counter)
 {
 	//update itself
-	updateTaskExecCounter(&task_list[STACK_POP(task_stack)], tmp_counter);
+	updateTaskExecCounter(&task_list[STACK_POP(task_stack[core_id])], tmp_counter);
 	//push the current owner of the resource on the task stack
 	
 }
 
-void onSemaforGreen(uint8_t task_id, perf_counter tmp_counter)
+void onSemaforGreen(uint8_t core_id, uint8_t task_id, perf_counter tmp_counter)
 {
 	//update the task that released the resource and pop the task from stack
-	updateTaskExecCounter(&task_list[STACK_TOP(task_stack)], tmp_counter);
-	STACK_PUSH(task_stack, task_id);
+	updateTaskExecCounter(&task_list[STACK_TOP(task_stack[core_id])], tmp_counter);
+	STACK_PUSH(task_stack[core_id], task_id);
 }
 
-void finishIdleTask(perf_counter tmp_counter)
+void onFinish(uint8_t task_id)
 {
-	//update the task that was interrupted by this request
-	finishTaskExecCounter(&task_list[0], tmp_counter);
+	finishIdleTask(&task_list[task_id]);
 }
 
 
@@ -70,7 +70,7 @@ void printTaskCounters(void (*printf)(const char *fmt, ...))
 #endif
 	printf(NEW_LINE);
 
-	for(i=0; i <= NUMBER_OF_TASKS; i++)
+	for(i=0; i < NUMBER_OF_TASKS+2; i++)
 	{
 		printf("%u, ", i);
 		printCounter(&task_list[i], printf);

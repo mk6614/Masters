@@ -53,6 +53,20 @@ void updateTaskExecCounter(task_counter* counter, perf_counter tmp_counter)
 #endif
 }
 
+void finishIdleTask(task_counter* counter)
+{
+	counter->exec_counter++;
+#ifdef MEASURE_WAITING_TIME
+	counter->semafor_exec_counter++;
+#endif
+#ifdef MEASURE_CLK
+	counter->clk_sum += counter->clk_time;
+#endif
+#ifdef MEASURE_INSTRUCTIONS
+	counter->inst_sum += counter->inst_time;
+#endif
+}
+
 void finishTaskExecCounter(task_counter* counter, perf_counter tmp_counter)
 {
 	updateTaskExecCounter(counter, tmp_counter);
@@ -72,7 +86,8 @@ void finishTaskExecCounter(task_counter* counter, perf_counter tmp_counter)
 	SET_MIN(counter->clk_time, counter->clk_min);
 	SET_MAX(counter->clk_time, counter->clk_max);
 	tmp = (counter->clk_sum/counter->exec_counter) - counter->clk_time;
-	counter->clk_var += tmp*tmp;
+	//TODO: uporabi Welford's online algorithm
+	counter->clk_var += tmp;
 	counter->clk_time=0;
 #endif
 #ifdef MEASURE_INSTRUCTIONS
@@ -95,13 +110,13 @@ void printCounter(task_counter* counter, void (*printf)(const char *fmt, ...))
 	{
 		printf("%u", (unsigned int) counter->exec_counter);
 		#ifdef MEASURE_WAITING_TIME
-				printf(", %u, %llu, %lu, %lu, %lu, %lu",(unsigned int) counter->semafor_exec_counter, (unsigned longlong) counter->waiting_sum, (unsigned long) (counter->clk_sum/counter->exec_counter), (unsigned long) counter->waiting_var, (unsigned long) counter->clk_min, (unsigned long) counter->clk_max);
+				printf(", %u, %llu, %lu, %lu, %lu, %lu",(unsigned int) counter->semafor_exec_counter, (unsigned longlong) counter->waiting_sum, (long) (counter->clk_sum/counter->exec_counter), (unsigned long) counter->waiting_var, (unsigned long) counter->clk_min, (unsigned long) counter->clk_max);
 		#endif
 		#ifdef MEASURE_CLK
-				printf(", %llu, %lu, %lu, %lu, %lu", (unsigned long long) counter->clk_sum,(unsigned long) (counter->clk_sum/counter->exec_counter), (unsigned long)counter->clk_var, (unsigned long) counter->clk_min, (unsigned long) counter->clk_max);
+				printf(", %llu, %lu, %ld, %lu, %lu", (unsigned long long) counter->clk_sum,(unsigned long) (counter->clk_sum/counter->exec_counter), (long)counter->clk_var, (unsigned long) counter->clk_min, (unsigned long) counter->clk_max);
 		#endif
 		#ifdef MEASURE_INSTRUCTIONS
-				printf(", %llu, %lu, %lu, %lu, %lu", (unsigned long long)counter->inst_sum, (unsigned long)(counter->inst_sum/counter->exec_counter), (unsigned long)counter->inst_var, (unsigned long)counter->inst_min, (unsigned long)counter->inst_max);
+				printf(", %llu, %lu, %ld, %lu, %lu", (unsigned long long)counter->inst_sum, (unsigned long)(counter->inst_sum/counter->exec_counter), (long)counter->inst_var, (unsigned long)counter->inst_min, (unsigned long)counter->inst_max);
 		#endif
 				printf(NEW_LINE);
 	}

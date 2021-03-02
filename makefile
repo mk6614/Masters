@@ -1,29 +1,37 @@
 CC = gcc
 CFLAGS = -g -Wall
 
+#ENV="-DUNITTEST_ENV" 
+
+TRICORE_PATH="/cygdrive/c/HighTec/toolchains/tricore/v4.9.3.0-infineon-1.0/tricore/include/"
+
 default: unittest clean
 
-unittest_perf_counter.o: UnitTests/UnitTestCounter.c PerformanceCounter.h
-	gcc $(CFLAGS) -DUNITTEST_ENV -c UnitTests/UnitTestCounter.c
+ENV = -DUNITTEST_ENV
 
-unittest_benchmark.o:	HighTecBenchmark.c Benchmark.h
-	gcc $(CFLAGS) -DUNITTEST_ENV -c HighTecBenchmark.c
+	
 
-benchmark:	HighTecBenchmark.c Benchmark.h
-	gcc $(CFLAGS) -DUNITTEST_ENV -c HighTecBenchmark.c
+ht_benchmark.o:	HighTecBenchmark.c Benchmark.h BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o Benchmark.o -c HighTecBenchmark.c
 
-perf_counter.o: TriCoreCounter.c PerformanceCounter.h
-	gcc $(CFLAGS) -DUNITTEST_ENV -c TriCoreCounter.c
+ee_benchmark:	EikaBenchmark.c Benchmark.h BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o Benchmark.o HighTecBenchmark.c
 
-task_counter.o: TaskCounter.c TaskCounter.h
-	gcc $(CFLAGS) -DUNITTEST_ENV -c TaskCounter.c
+tc_perf_counter.o: TriCoreCounter.c PerformanceCounter.h BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o PerformanceCounter.o -c TriCoreCounter.c
 
-task_stack.o: TaskStack.c TaskStack.h
-	gcc $(CFLAGS) -DUNITTEST_ENV -c TaskStack.c
+unittest_perf_counter.o: UnitTests/UnitTestCounter.c PerformanceCounter.h BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o PerformanceCounter.o -c UnitTests/UnitTestCounter.c
+
+task_counter.o: TaskCounter.c TaskCounter.h BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o TaskCounter.o -c TaskCounter.c
+
+task_stack.o: TaskStack.c TaskStack.h BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o TaskStack.o -c TaskStack.c
 
 
-unittest: unittest_benchmark.o unittest_perf_counter.o task_counter.o task_stack.o
-	gcc $(CFLAGS) -DUNITTEST_ENV -o unittest_benchmark ./UnitTests/UnitTestMain.c HighTecBenchmark.o UnitTestCounter.o TaskCounter.o TaskStack.o
+unittest: ht_benchmark.o unittest_perf_counter.o task_counter.o task_stack.o BenchmarkCfg.h
+	gcc $(CFLAGS) $(ENV) -o unittest_benchmark ./UnitTests/UnitTestMain.c Benchmark.o PerformanceCounter.o TaskCounter.o TaskStack.o
 
 clean: 
 	rm *.o

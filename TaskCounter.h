@@ -16,7 +16,6 @@
 
 
 typedef struct {
-	uint8_t exec_counter;
 #ifdef MEASURE_WAITING_TIME
 	uint8_t semafor_exec_counter;
 	uint32_t waiting_time;
@@ -27,10 +26,10 @@ typedef struct {
 #endif
 #ifdef MEASURE_CLK
 	uint64_t clk_sum;
+	int64_t clk_var;
 	uint32_t clk_time;
 	uint32_t clk_min;
 	uint32_t clk_max;
-	uint64_t clk_var;
 #endif
 #ifdef MEASURE_INSTRUCTIONS
 	uint64_t inst_sum;
@@ -39,6 +38,8 @@ typedef struct {
 	uint32_t inst_max;
 	uint64_t inst_var;
 #endif
+
+	uint8_t exec_counter;
 
 } task_counter;
 
@@ -50,7 +51,7 @@ void finishTaskExecCounter(task_counter* counter, perf_counter tmp_counter);
 
 void printCounter(task_counter* counter, void (*printf)(const char *fmt, ...));
 
-void finishIdleTask(perf_counter tmp_counter);
+void finishIdleTask(task_counter* counter);
 
 
 

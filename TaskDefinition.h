@@ -2,7 +2,7 @@
 #define TASK_DEFINITION_H_
 
 #ifdef ERIKA_OS
-    #include "../ee.h"
+    //#include "../ee.h"
 #else
     #define TASK(name)  void name(void);\
                         void name(void)    
@@ -13,7 +13,7 @@
 #ifdef  UNITTEST_ENV
     #warning compiling with unit test environment
 #else
-    #ifndef __GNUC__)
+    #ifndef __GNUC__
         #error Compiler not known; define UNITTEST_ENV for unix like environment or __GNUC__ for HighTec GNUC compiler
     #endif
 #endif

@@ -76,10 +76,12 @@ void __initPerfCounter()
 	//read the unsigned access
 	cctrl.U    = MFCR(CPU_CCTRL);
 	cctrl.B.CE = 0;
-	cctrl.B.M1 = 0x7 & 0; //only 3 bits
+	//every M register can be configured to count hardware events such as program/data cache hits/misses
+	//the avaliable options are implementation specific (1.6E core has no data cache)
+	cctrl.B.M1 = 0x7 & 0;
 	cctrl.B.M2 = 0x7 & 0;
 	cctrl.B.M3 = 0x7 & 0;
-	//write init structure to counter control register
+	//initialize the counter
 
 	/* reset the counter values */
 	MTCR(CPU_CCNT, 0);
@@ -93,5 +95,17 @@ void __initPerfCounter()
 	//write params to register
 	MTCR(CPU_CCTRL, cctrl.U);
 }
+
+void __writePerfCounter(perf_counter counter)
+{
+	__stopPerfCounter();
+	MTCR(CPU_CCNT, counter.clk);
+	MTCR(CPU_ICNT, counter.ist);
+	MTCR(CPU_M1CNT, counter.m1);
+	MTCR(CPU_M2CNT, counter.m2);
+	MTCR(CPU_M3CNT, counter.m3);
+
+}
+
 
 

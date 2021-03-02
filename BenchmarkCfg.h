@@ -8,15 +8,12 @@
 #ifndef PERF_CONFIG_H_
 #define PERF_CONFIG_H_
 
-//#define TCPATH tc26xb
-#define UNITTEST_ENV
+#define TCPATH tc26xb
+#define ERIKA_OS
 
-#ifndef USE_BR
 #define NEW_LINE "\r\n"
-#else
-#define NEW_LINE "\n\b\r"
-#endif
 
+#define NUMBER_OF_CORES	2
 #define NUMBER_OF_TASKS 5
 //user can measure on of the following per performance test:
 #define MEASURE_CLK
@@ -57,9 +54,9 @@
 	#ifdef MEASURE_INSTRUCTIONS
 		#undef MEASURE_INSTRUCTIONS
 	#endif
-#elif((defined(__GNUC__)) 
-	#if && !defined(TCPATH))
-		#error "Please define the TCPATH as defined in HighTec IDE" //example: #define TCPATH tc26xb
+#elif(defined(__GNUC__))
+	#if (!defined(TCPATH))
+		#error Please define the TCPATH as defined in HighTec IDE //example: #define TCPATH tc26xb
 	#endif
 	#define TC_STR(s)		# s
 	#define TC_INCLUDE(f)	TC_STR(f)

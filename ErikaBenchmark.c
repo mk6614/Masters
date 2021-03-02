@@ -7,71 +7,43 @@
 
 #include "Benchmark.h"
 
-/**
- * \brief initialisation of the performance counter and structs to hold the values
- *
- *  The information for the init process is provided by benchmark_conf.h file:
- *  NUMBER_OF_TASKS+1 value holders (structs) are created (an additional one is used as an idle task)
- *  MEASURE_XXX defines what the benchmark measures
- */
 void initBenchmark(void)
 {
 	__initPerfCounter();
 	initTaskStack();
 }
 
-/**
- * \brief declare the starting point of the task
- */
-void startTask(uint8_t task_id)
+void startTask(uint8_t core_id, uint8_t task_id)
 {
 	__stopPerfCounter();
-	onTaskStart(task_id, __readPerfCounter());
+	onTaskStart(core_id, task_id, __readPerfCounter());
 	__resetPerfCounter();
 	__startPerfCounter();
 }
 
-/**
- * \brief declare the ending point of a task
- */
-void finishTask()
+void finishTask(uint8_t core_id)
 {
 	__stopPerfCounter();
-	onTaskFinish(__readPerfCounter());
+	onTaskFinish(core_id, __readPerfCounter());
 	__resetPerfCounter();
 	__startPerfCounter();
 }
 
-
-
-/**
- * \brief declare the point of wait
- */
-
-void waitSemafor(uint8_t task_id)
+void waitSemafor(uint8_t core_id)
 {
 	__stopPerfCounter();
-	onWaitSemafor(__readPerfCounter()); //pops the previous resource owner off the stack
+	onSemaforWait(core_id, __readPerfCounter()); //pops the previous resource owner off the stack
 	__resetPerfCounter();
 	__startPerfCounter();
 }
 
-/**
- * \brief declare the point of resource reservation
- */
-void semaforGreen(uint8_t task_id)
+void semaforGreen(uint8_t core_id, uint8_t task_id)
 {
 	__stopPerfCounter();
-	onSemaforGreen(task_id, __readPerfCounter()); //pushes the resource owner on the stack
+	onSemaforGreen(core_id, task_id, __readPerfCounter()); //pushes the resource owner on the stack
 	__resetPerfCounter();
 	__startPerfCounter();
 }
-
-/**
- * \brief declare the starting point of the measuring process
- *
- * Call this before the task execution (before the OS start)
- */
 
 void startBenchmark(void)
 {
@@ -80,40 +52,15 @@ void startBenchmark(void)
 	__startPerfCounter();
 }
 
-/**
- * \brief declare the ending point of the measuring process
- *
- * The user needs to decide when to stop the measuring process.
- * At this point the idle task is updated and the Counter can be printed and the report generated.
-*/
-
-void finishBenchmark(void)
+void finishBenchmark()
 {
-	finishIdleTask(__readPerfCounter());
+	int i;
+	for (i=0; i< NUMBER_OF_CORES; i++) onFinish(i);
 }
 
-/**
- * \brief print the values of the task Counter
- * \param printf a blocking! function that prints to a desired output.
- *
- * The printf should be blocking so the measuring process is not affected by the resource reservation of the printing process
- */
 void printCounters(void (*printf)(const char *fmt, ...))
 {
 	printTaskCounters(printf);
 }
-
-/**
- * \brief generates a report from the values of the Counter.
- * \param printf a blocking! function that prints to a desired output.
- *
- * The printf should be blocking so the measuring process is not affected by the resource reservation of the printing process
- *
- */
-void generateReport(void (*printf)(const char *fmt, ...))
-{
-
-}
-
 
 

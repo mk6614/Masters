@@ -13,4 +13,4 @@ These files can also be obtained from HighTec IDE by opening an Example for your
 Do not forget to keep the benchmark source files in the `APP_SRC` of `conf.oil`
 
 In HighTec you can open a new Example for your target MCU and add the header Benchmark files to the `h` folder and source Benchmark files to the `src` folder. You can dismiss the `ErikaBenchmark.c` file.
-Include "Benchmark.h" wherever you need to use the Benchmark functionality.
+Include "Benchmark.h" and "TaskDefinition.h" wherever you need to use the Benchmark functionality.

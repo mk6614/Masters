@@ -60,8 +60,12 @@ int main()
     initBenchmark();
     startBenchmark();
     for (int i=0; i< 20; i++) CALL_TASK(task1);
-    //for (int i=0; i< 10; i++) CALL_TASK(task2);
+    for (int i=0; i< 10; i++) CALL_TASK(task2);
     for (int i=0; i< 20; i++) CALL_TASK(task3);
+    printCounters((void*)printf);
+    for (int i=0; i< 40; i++) CALL_TASK(task3);
+    printCounters((void*)printf);
+    for (int i=0; i< 100; i++) CALL_TASK(task3);
     finishBenchmark();
     printCounters((void*)printf);
 

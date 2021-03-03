@@ -1,5 +1,5 @@
 /*
- * task_stack.c
+ * TaskStack.c
  *
  *  Created on: 2 Dec 2020
  *      Author: mojca
@@ -55,19 +55,11 @@ void printTaskCounters(void (*printf)(const char *fmt, ...))
 {
 	uint8_t i = 0;
 	printf("task id, task exec counter");
-#ifdef MEASURE_WAITING_TIME
-	printf(", semafor exec counter, waiting sum, waiting avg, waiting var, waiting min, waiting max");
-#endif
+	printf(", clk mean, clk var, clk min, clk max");
 
-#ifdef MEASURE_CLK
-	printf(", clk sum, clk avg, clk var, clk min, clk max");
-#endif
-#ifdef MEASURE_INSTRUCTIONS
-	printf(", instruction sum, instruction avg, instruction var, instruction min, instruction max");
-#endif
 	printf(NEW_LINE);
 
-	for(i=0; i < NUMBER_OF_TASKS+2; i++)
+	for(i=0; i < NUMBER_OF_TASKS+NUMBER_OF_CORES; i++)
 	{
 		printf("%u, ", i);
 		printCounter(&task_list[i], printf);

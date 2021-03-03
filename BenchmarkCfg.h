@@ -9,7 +9,7 @@
 #define PERF_CONFIG_H_
 
 #define TCPATH tc26xb
-#define ERIKA_OS
+//#define ERIKA_OS
 
 #define NEW_LINE "\r\n"
 

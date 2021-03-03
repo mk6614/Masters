@@ -1,5 +1,5 @@
 /*
- * task_counter.h
+ * TaskCounter.h
  *
  *  Created on: 2 Dec 2020
  *      Author: mojca
@@ -16,28 +16,13 @@
 
 
 typedef struct {
-#ifdef MEASURE_WAITING_TIME
-	uint8_t semafor_exec_counter;
-	uint32_t waiting_time;
-	uint64_t waiting_sum;
-	uint32_t waiting_min;
-	uint32_t waiting_max;
-	uint64_t waiting_var;
-#endif
-#ifdef MEASURE_CLK
-	uint64_t clk_sum;
-	int64_t clk_var;
+	//the mean and variance are calculated using Welford's online algorithm
+	uint32_t clk_mean;
+	uint32_t clk_M2; // variance = clk_M2 / exec_counter, stdv = sqrt(variance)
+	
 	uint32_t clk_time;
 	uint32_t clk_min;
 	uint32_t clk_max;
-#endif
-#ifdef MEASURE_INSTRUCTIONS
-	uint64_t inst_sum;
-	uint32_t inst_time;
-	uint32_t inst_min;
-	uint32_t inst_max;
-	uint64_t inst_var;
-#endif
 
 	uint8_t exec_counter;
 
